@@ -25,7 +25,7 @@ void setup(){
   posRun = new PVector (w/4, h/2);
   posPol = new PVector (w/8, h/2);
   newLanes();
-  //newOb();
+  newOb();
   }
   
   void newGuy(){
@@ -45,18 +45,33 @@ void setup(){
     int upB = 2;
     for(int inLane = 0; inLane < 3; inLane ++){
       int inOb = (int) random (lowB, upB);
-      lane.set(inLane, ob.get(inOb));
+      lane.add(ob.get(inOb));
       ob.remove(inOb);
       upB --;
     }
     
+    for(int inLane = 0; inLane < 3; inLane ++){
+      if(inLane == 0){
+      if(lane.get(inLane) == duck){
+        duck = new PVector(w * size - size * h/6, inLane * h/3 * size);
+        fill (57,49,17);
+        square(duck.x, duck.y, h/6 * size);
+      }
+      if(lane.get(inLane) == jump){
+        jump = new PVector(w * size - size * h/6, inLane * 2*h/3 * size);
+        fill(60,49,17);
+        square(jump.x, jump.y, h/6 * size);
+      }
+      else{
+        up = new PVector(w * size - size * h/6, inLane * 2*h/3 * size);
+        fill(70,49,17);
+        square(up.x,up.y, h/6 * size);
+      }
+    }
+    if(inLane == 1){
+    }
+    }
     
-    
-    int yDuck = (int) random(1,3);
-    duck = new PVector(w * size - size * h/6, yDuck * h/3 * size);
-    fill (57,49,17);
-    square(duck.x, duck.y, h/6 * size);
-    lane.set(yDuck, duck);
   }
   
   void keyPressed(){
