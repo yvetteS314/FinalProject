@@ -131,6 +131,8 @@ void setup(){
     if(key == CODED){
       if(keyCode == RIGHT){
         duck.set(new PVector(duck.x - size, duck.y));
+        jump.set(new PVector(jump.x - size, jump.y));
+        up.set(new PVector(up.x - size, up.y));
       }
     }
   }
