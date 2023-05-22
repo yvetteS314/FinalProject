@@ -42,6 +42,8 @@ void setup(){
   }
   
   void draw(){
+    background(200);
+    newLanes();
     drawOb();
   }
   
@@ -133,7 +135,7 @@ void setup(){
     for(PVector up: ups){
     fill(70,49,17);
     triangle(up.x, up.y, up.x, up.y + h/9 * size, up.x - w / 9 * size, up.y + h/9 * size);
-    square(up.x + size, up.y, size);
+    square(up.x, up.y, size);
     }
   }
   
