@@ -4,12 +4,15 @@ PVector bgrnd;
 PVector duck;
 PVector jump;
 PVector up;
-PVector temp;
+
 
 int speed = 20;
 int size = 80;
 int w;
 int h;
+ArrayList<PVector> ducks = new ArrayList<PVector>();
+ArrayList<PVector> jumps = new ArrayList<PVector>();
+ArrayList<PVector> ups = new ArrayList<PVector>();
 ArrayList<String> lane = new ArrayList<String>(); // 1 2 3
 ArrayList<String> ob = new ArrayList<String>();
 
@@ -39,20 +42,7 @@ void setup(){
   }
   
   void draw(){
-    ob.add("duck");
-    ob.add("jump");
-    ob.add("up");
     drawOb();
-  }
-  
-  void drawOb(){
-    fill (57,49,17);
-    square(duck.x, duck.y, h/6 * size);
-    fill(60,49,17);
-    square(jump.x, jump.y, h/6 * size);
-    fill(70,49,17);
-    triangle(up.x, up.y, up.x, up.y + h/9 * size, up.x - w / 9 * size, up.y + h/9 * size);
-    square(up.x + size, up.y, size);
   }
   
   void newOb(){
@@ -66,17 +56,18 @@ void setup(){
       ob.remove(inOb);
       upB --;
     }
-    
-    
+ 
     for(int inLane = 0; inLane < 3; inLane ++){
       if(inLane == 0){
       if(lane.get(inLane) == "duck"){
         duck = new PVector(w * size - size / 2, inLane * h/3 * size);
+        ducks.add(duck);
         println("duck");
       }
       else{
         if(lane.get(inLane) == "jump"){
         jump = new PVector(w * size - size / 2, (inLane + 1) * h / 3 * size - h / 9 * size);
+        jumps.add(jump);
         println("jump");
       }
       else{
@@ -89,15 +80,18 @@ void setup(){
       if(inLane == 1){
       if(lane.get(inLane) == "duck"){
         duck = new PVector(w * size - size / 2, inLane * h/3 * size);
+        ducks.add(duck);
         println("duck");
       }
       else{
         if (lane.get(inLane) == "jump"){
         jump = new PVector(w * size - size / 2, (inLane + 1) * h / 3 * size - h / 9 * size);
+        jumps.add(jump);
         println("jump");
     }
     else{
       up = new PVector(w * size + size /2 , (inLane + 1) * h / 3 * size - h / 9 * size);
+      ups.add(up);  
         println("up");
     }
     }
@@ -105,20 +99,41 @@ void setup(){
     else{
       if(lane.get(inLane) == "duck"){
         duck = new PVector(w * size - size / 2, inLane * h/3 * size);
+        ducks.add(duck);
         println("duck");
       }
       else{
         if (lane.get(inLane) == "jump"){
         jump = new PVector(w * size - size / 2, (inLane + 1) * h / 3 * size - h / 9 * size);
+        jumps.add(jump);
         println("jump");
     }
     else{
       up = new PVector(w * size + size /2 , (inLane + 1) * h / 3 * size - h / 9 * size);
+        ups.add(up);  
         println("up");
     }
     }
     }
   }
+    }
+  }
+ 
+  
+  
+  void drawOb(){
+    for(PVector duck: ducks){
+    fill (57,49,17);
+    square(duck.x, duck.y, h/6 * size);
+    }
+    for(PVector jump: jumps){
+    fill(60,49,17);
+    square(jump.x, jump.y, h/6 * size);
+    }
+    for(PVector up: ups){
+    fill(70,49,17);
+    triangle(up.x, up.y, up.x, up.y + h/9 * size, up.x - w / 9 * size, up.y + h/9 * size);
+    square(up.x + size, up.y, size);
     }
   }
   
@@ -130,12 +145,25 @@ void setup(){
   void keyPressed(){
     if(key == CODED){
       if(keyCode == RIGHT){
-        duck.set(new PVector(duck.x - size, duck.y));
-        jump.set(new PVector(jump.x - size, jump.y));
-        up.set(new PVector(up.x - size, up.y));
+        duck = new PVector(duck.x - size, duck.y);
+        ducks.add(duck);
+        if(ducks.size() > 1){
+        ducks.remove(0);
+        }
+        jump = new PVector(jump.x - size, jump.y);
+        jumps.add(jump);
+        if(jumps.size() > 1){
+          jumps.remove(0);
+        }
+        up = new PVector(up.x - size, up.y);
+        ups.add(up);
+        if(ups.size() > 1){
+          ups.remove(0);
+      }
       }
     }
   }
+
   
   void reset(){
     setup();
