@@ -4,12 +4,15 @@ PVector bgrnd;
 PVector duck;
 PVector jump;
 PVector up;
+PVector dir;
 
+boolean start = false;
 
-int speed = 20;
+int speed = 10;
 int size = 80;
 int w;
 int h;
+int frameCount = 0;
 ArrayList<PVector> ducks = new ArrayList<PVector>();
 ArrayList<PVector> jumps = new ArrayList<PVector>();
 ArrayList<PVector> ups = new ArrayList<PVector>();
@@ -22,8 +25,8 @@ void setup(){
   size(1080, 720);
   w = width / size;
   h = height / size;
-  posRun = new PVector (w/4, h/2);
-  posPol = new PVector (w/8, h/2);
+  posRun = new PVector (w/4 * size, h/2 * size);
+  posPol = new PVector (w/8 * size, h/2 * size);
   newLanes();
   ob.add("duck");
   ob.add("jump");
@@ -35,6 +38,7 @@ void setup(){
     fill(229,214,162);
     circle(posRun.x, posRun.y, size);
   }
+
   void newLanes(){
     fill(28,27,27);
     line(0,h/3 * size, w * size + size, h/3 * size);
@@ -44,12 +48,17 @@ void setup(){
   void draw(){
     background(200);
     newLanes();
+    newGuy();
+    if(frameCount % speed == 0){
+    updateOb();
+    }
+    frameCount ++;
     drawOb();
   }
   
   void newOb(){
     int lowB = 0;
-    int upB = 2;
+    int upB = 3;
     for(int inLane = 0; inLane < 3; inLane ++){
       int inOb = (int) random (lowB, upB);
      // println(ob);
@@ -135,33 +144,42 @@ void setup(){
     for(PVector up: ups){
     fill(70,49,17);
     triangle(up.x, up.y, up.x, up.y + h/9 * size, up.x - w / 9 * size, up.y + h/9 * size);
-    square(up.x, up.y, size);
+    for(int add = 0; add < w * size; add += size){
+    square(up.x + add, up.y, size);
+    }
     }
   }
   
   void updateOb(){
-   //duck.set(new PVector(- 1, 0));
-  // drawOb(); 
+    if(start == true){
+    duck.x -= 0.5 * size;
+    jump.x -= 0.5 * size;
+    up.x -= 0.5 * size;
+   ducks.add(duck);
+        if(ducks.size() > 1){
+        ducks.remove(0);
+        }
+  jumps.add(jump);
+        if(jumps.size() > 1){
+          jumps.remove(0);
+        }
+  ups.add(up);
+        if(ups.size() > 1){
+          ups.remove(0);
+      }
+    }
+    if(duck.x < 0){
+      ob.add("duck");
+      ob.add("jump");
+      ob.add("up");
+      newOb();
+    }
   }
   
   void keyPressed(){
     if(key == CODED){
       if(keyCode == RIGHT){
-        duck = new PVector(duck.x - size, duck.y);
-        ducks.add(duck);
-        if(ducks.size() > 1){
-        ducks.remove(0);
-        }
-        jump = new PVector(jump.x - size, jump.y);
-        jumps.add(jump);
-        if(jumps.size() > 1){
-          jumps.remove(0);
-        }
-        up = new PVector(up.x - size, up.y);
-        ups.add(up);
-        if(ups.size() > 1){
-          ups.remove(0);
-      }
+       start = true;
       }
     }
   }
