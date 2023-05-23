@@ -175,10 +175,13 @@ void setup(){
           ups.remove(0);
       }
     }
-    if(duck.x < 0){
+    if(duck.x < - size){
       ob.add("duck");
       ob.add("jump");
       ob.add("up");
+      ducks.remove(0);
+      jumps.remove(0);
+      ups.remove(0);
       newOb();
     }
   }
