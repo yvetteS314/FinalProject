@@ -6,8 +6,9 @@ PVector jump;
 PVector up;
 PVector dir;
 
+boolean start = false;
 
-int speed = 20;
+int speed = 10;
 int size = 80;
 int w;
 int h;
@@ -24,8 +25,8 @@ void setup(){
   size(1080, 720);
   w = width / size;
   h = height / size;
-  posRun = new PVector (w/4, h/2);
-  posPol = new PVector (w/8, h/2);
+  posRun = new PVector (w/4 * size, h/2 * size);
+  posPol = new PVector (w/8 * size, h/2 * size);
   newLanes();
   ob.add("duck");
   ob.add("jump");
@@ -37,6 +38,7 @@ void setup(){
     fill(229,214,162);
     circle(posRun.x, posRun.y, size);
   }
+
   void newLanes(){
     fill(28,27,27);
     line(0,h/3 * size, w * size + size, h/3 * size);
@@ -46,6 +48,7 @@ void setup(){
   void draw(){
     background(200);
     newLanes();
+    newGuy();
     if(frameCount % speed == 0){
     updateOb();
     }
@@ -55,7 +58,7 @@ void setup(){
   
   void newOb(){
     int lowB = 0;
-    int upB = 2;
+    int upB = 3;
     for(int inLane = 0; inLane < 3; inLane ++){
       int inOb = (int) random (lowB, upB);
      // println(ob);
@@ -148,6 +151,10 @@ void setup(){
   }
   
   void updateOb(){
+    if(start == true){
+    duck.x -= 0.5 * size;
+    jump.x -= 0.5 * size;
+    up.x -= 0.5 * size;
    ducks.add(duck);
         if(ducks.size() > 1){
         ducks.remove(0);
@@ -160,19 +167,19 @@ void setup(){
         if(ups.size() > 1){
           ups.remove(0);
       }
+    }
+    if(duck.x < 0){
+      ob.add("duck");
+      ob.add("jump");
+      ob.add("up");
+      newOb();
+    }
   }
   
   void keyPressed(){
     if(key == CODED){
       if(keyCode == RIGHT){
-        duck.x -= size;
-        jump.x -= size;
-        up.x -= size;
-        //dir = new PVector(-1, 0);
-        /*duck = new PVector(duck.x - size, duck.y);
-        jump = new PVector(jump.x - size, jump.y);
-        up = new PVector(up.x - size, up.y);
-        */
+       start = true;
       }
     }
   }
