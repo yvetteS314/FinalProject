@@ -193,7 +193,7 @@ void setup(){
     }
     
     for(PVector posRun : runner){
-      if(posRun.x == duck.x && posRun.y == duck.y|| posRun.x == jump.x && posRun.y == jump.y){
+      if(posRun.x * size == duck.x * size && posRun.y * size == duck.y * size|| posRun.x == jump.x && posRun.y == jump.y){
         reset();
     }
   }
