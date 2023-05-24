@@ -47,7 +47,9 @@ void setup(){
     PVector bodyPart = new PVector(posRun.x - 0.35 * size, posRun.y + 0.5 * size);
     fill(72, 10, 95);
     square(bodyPart.x, bodyPart.y, size * 3 / 4);
-    
+    circle(bodyPart.x, bodyPart.y, size * 1/4);
+    circle(bodyPart.x + size * 0.75, bodyPart.y, size * 1/4);
+    rect(bodyPart.x - size * 0.125, bodyPart.y, size * 0.125, size * 0.5);
   }
 
   void newLanes(){
