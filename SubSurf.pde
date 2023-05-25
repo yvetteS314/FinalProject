@@ -52,13 +52,15 @@ void setup(){
     circle(bodyPart.x, bodyPart.y, size * 1/4);
     circle(bodyPart.x + size * 0.75, bodyPart.y, size * 1/4);
     rect(bodyPart.x, bodyPart.y + size * 0.75, size * 1/4, size * 3/8);
+    rect(bodyPart.x + size * 0.5, bodyPart.y + size * 0.75, size * 1/4, size * 3/8);
     rect(bodyPart.x - size * 0.125, bodyPart.y, size * 0.125, size * 0.5);
     rect(bodyPart.x + size * 0.75, bodyPart.y, size * 0.125, size * 0.5);
     arms = new PVector(bodyPart.x - size * 0.125, bodyPart.y + size * 0.5);
     rect(arms.x, arms.y, size * 0.125, size * 0.5);
     rect(arms.x + size * 0.875, arms.y, size * 0.125, size * 0.5);
-    
-    
+    legs = new PVector(bodyPart.x, bodyPart.y + size * 9/8);
+    rect(legs.x, legs.y, size * 1/4, size * 3/8);
+    rect(legs.x + size * 0.5,legs.y, size * 1/4, size * 3/8);
   }
 
   void newLanes(){
