@@ -5,6 +5,7 @@ PVector duck;
 PVector jump;
 PVector up;
 PVector dir;
+PVector bodyPart;
 
 PImage bgrd;
 
@@ -43,12 +44,31 @@ void setup(){
     circle(posRun.x, posRun.y, size);
     fill(10,10,10);
     circle(posRun.x + 0.5 * size, posRun.y, 10);
+    PVector bodyPart = new PVector(posRun.x - 0.35 * size, posRun.y + 0.5 * size);
+    fill(72, 10, 95);
+    square(bodyPart.x, bodyPart.y, size * 3 / 4);
+    circle(bodyPart.x, bodyPart.y, size * 1/4);
+    circle(bodyPart.x + size * 0.75, bodyPart.y, size * 1/4);
+    rect(bodyPart.x - size * 0.125, bodyPart.y, size * 0.125, size * 0.5);
   }
 
   void newLanes(){
     fill(28,27,27);
+    for(int track = 0; track < w * size; track += size){
+      line(track, h/3 * size, track, h/3 * size - h/6 * size);
+    }
+    line(0, h/3 * size - h/6 * size, w * size + size, h/3 * size - h/6 * size);
     line(0,h/3 * size, w * size + size, h/3 * size);
+    for(int track = 0; track < w * size; track += size){
+      line(track, 2*h/3 * size, track, 2*h/3 * size - h/6 * size);
+    }
+    line(0, 2*h/3 * size - h/6 * size, w * size + size, 2*h/3 * size - h/6 * size);
     line(0, 2*h/3 * size, w * size + size, 2*h/3 * size);
+    for(int track = 0; track < w * size; track += size){
+      line(track, h * size, track, h * size - size);
+    }
+    line(0, h * size - size, w * size, h * size - size);
+    line(0, h * size, w * size, h * size);
   }
   
   void draw(){
@@ -188,6 +208,7 @@ void setup(){
   
   void updateGuy(){
     runner.add(posRun);
+    runner.add(bodyPart);
     if(runner.size() > 0 ){
       runner.remove(0);
     }
