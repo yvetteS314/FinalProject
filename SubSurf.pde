@@ -6,6 +6,8 @@ PVector jump;
 PVector up;
 PVector dir;
 PVector bodyPart;
+PVector arms;
+PVector legs;
 
 PImage bgrd;
 
@@ -44,12 +46,19 @@ void setup(){
     circle(posRun.x, posRun.y, size);
     fill(10,10,10);
     circle(posRun.x + 0.5 * size, posRun.y, 10);
-    PVector bodyPart = new PVector(posRun.x - 0.35 * size, posRun.y + 0.5 * size);
+    bodyPart = new PVector(posRun.x - 0.35 * size, posRun.y + 0.5 * size);
     fill(72, 10, 95);
     square(bodyPart.x, bodyPart.y, size * 3 / 4);
     circle(bodyPart.x, bodyPart.y, size * 1/4);
     circle(bodyPart.x + size * 0.75, bodyPart.y, size * 1/4);
+    rect(bodyPart.x, bodyPart.y + size * 0.75, size * 1/4, size * 3/8);
     rect(bodyPart.x - size * 0.125, bodyPart.y, size * 0.125, size * 0.5);
+    rect(bodyPart.x + size * 0.75, bodyPart.y, size * 0.125, size * 0.5);
+    arms = new PVector(bodyPart.x - size * 0.125, bodyPart.y + size * 0.5);
+    rect(arms.x, arms.y, size * 0.125, size * 0.5);
+    rect(arms.x + size * 0.875, arms.y, size * 0.125, size * 0.5);
+    
+    
   }
 
   void newLanes(){
