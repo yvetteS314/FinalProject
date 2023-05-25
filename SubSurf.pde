@@ -50,6 +50,7 @@ void setup(){
     circle(bodyPart.x, bodyPart.y, size * 1/4);
     circle(bodyPart.x + size * 0.75, bodyPart.y, size * 1/4);
     rect(bodyPart.x - size * 0.125, bodyPart.y, size * 0.125, size * 0.5);
+    rect(bodyPart.x + size * 0.75, bodyPart.y, size * 0.125, size * 0.5);
   }
 
   void newLanes(){
