@@ -244,7 +244,12 @@ void setup(){
     }
   }
 
-  
+  void moveLimbs(){
+    if (bodyPart.x % 2 == 0){
+    }
+    else{
+    }
+  }
   void reset(){
     
   } 
