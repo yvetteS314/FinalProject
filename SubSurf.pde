@@ -18,6 +18,9 @@ int size = 80;
 int w;
 int h;
 int frameCount = 0;
+int  savedTime;
+int totTime = 500;
+
 ArrayList<PVector> runner = new ArrayList<PVector>();
 ArrayList<PVector> ducks = new ArrayList<PVector>();
 ArrayList<PVector> jumps = new ArrayList<PVector>();
@@ -30,6 +33,7 @@ void setup(){
   frameRate(60);
   fill(77,73,73);
   size(1300, 878);
+  savedTime = millis();
   w = width / size;
   h = height / size;
   posRun = new PVector (w/4 * size, h/2 * size);
@@ -55,14 +59,28 @@ void setup(){
     rect(bodyPart.x + size * 0.5, bodyPart.y + size * 0.75, size * 1/4, size * 3/8);
     rect(bodyPart.x - size * 0.125, bodyPart.y, size * 0.125, size * 0.5);
     rect(bodyPart.x + size * 0.75, bodyPart.y, size * 0.125, size * 0.5);
+  }
+  
+  void moveLimbs(){
+    int passedTime = millis() - savedTime;
     arms = new PVector(bodyPart.x - size * 0.125, bodyPart.y + size * 0.5);
+    legs = new PVector(bodyPart.x, bodyPart.y + size * 9/8);
+    if(posRun.x == w/4 * size && posRun.y == h/2 * size){
     rect(arms.x, arms.y, size * 0.125, size * 0.5);
     rect(arms.x + size * 0.875, arms.y, size * 0.125, size * 0.5);
-    legs = new PVector(bodyPart.x, bodyPart.y + size * 9/8);
     rect(legs.x, legs.y, size * 1/4, size * 3/8);
     rect(legs.x + size * 0.5,legs.y, size * 1/4, size * 3/8);
+    }
+    else{if (passedTime > totTime){
+      rect(arms.x, arms.y, size * 0.125, size * 0.5);
+      rect(arms.x + size * 0.875, arms.y, size * 0.5, size * 0.125);
+      savedTime = millis();
+    }
+    else{
+    }
+    }
   }
-
+  
   void newLanes(){
     fill(28,27,27);
     for(int track = 0; track < w * size; track += size){
@@ -85,8 +103,9 @@ void setup(){
   void draw(){
     background(200);
     background(bgrd);
-    newLanes();
     newGuy();
+      moveLimbs();
+    newLanes();
     if(frameCount % speed == 0){
     updateOb();
     }
@@ -243,13 +262,7 @@ void setup(){
       }
     }
   }
-
-  void moveLimbs(){
-    if (bodyPart.x % 2 == 0){
-    }
-    else{
-    }
-  }
+  
   void reset(){
     
   } 
