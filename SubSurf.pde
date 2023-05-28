@@ -19,7 +19,7 @@ int w;
 int h;
 int frameCount = 0;
 int  savedTime;
-int totTime = 500;
+int totTime = 1000;
 
 ArrayList<PVector> runner = new ArrayList<PVector>();
 ArrayList<PVector> ducks = new ArrayList<PVector>();
@@ -36,7 +36,7 @@ void setup(){
   savedTime = millis();
   w = width / size;
   h = height / size;
-  posRun = new PVector (w/4 * size, h/2 * size);
+  posRun = new PVector (w/4 * size, h/2 * size - size);
   posPol = new PVector (w/8 * size, h/2 * size);
   newLanes();
   ob.add("duck");
@@ -44,6 +44,32 @@ void setup(){
   ob.add("up");
   newOb();
   }
+  
+  void gravity(){
+    if(posRun.y < h/3 * size - 2 * size){
+      int curY = (int) posRun.y;
+      if(curY < h/3 * size){
+        posRun.y ++; 
+        curY = (int) posRun.y;
+      }
+      }
+      
+    if(posRun.y < 2*h/3 * size - 2 * size && posRun.y > h/3 * size - 2 * size){
+        int curY = (int) posRun.y;
+        if(curY < 2 * h/3 * size){
+        posRun.y ++;
+        curY = (int) posRun.y;
+        }
+      }
+      if(posRun.y < h * size - 2 * size && posRun.y > 2*h/3 * size - 2 * size){
+        int curY = (int) posRun.y;
+      if(curY < h * size){
+        posRun.y ++;
+        curY = (int) posRun.y;
+      }
+      }
+  }
+  
   
   void newGuy(){
     fill(229,214,162);
@@ -59,24 +85,33 @@ void setup(){
     rect(bodyPart.x + size * 0.5, bodyPart.y + size * 0.75, size * 1/4, size * 3/8);
     rect(bodyPart.x - size * 0.125, bodyPart.y, size * 0.125, size * 0.5);
     rect(bodyPart.x + size * 0.75, bodyPart.y, size * 0.125, size * 0.5);
+    runner.add(bodyPart);
   }
   
   void moveLimbs(){
-    int passedTime = millis() - savedTime;
     arms = new PVector(bodyPart.x - size * 0.125, bodyPart.y + size * 0.5);
     legs = new PVector(bodyPart.x, bodyPart.y + size * 9/8);
-    if(posRun.x == w/4 * size && posRun.y == h/2 * size){
+    runner.add(arms);
+    runner.add(legs);
+    if(start == false){
     rect(arms.x, arms.y, size * 0.125, size * 0.5);
     rect(arms.x + size * 0.875, arms.y, size * 0.125, size * 0.5);
     rect(legs.x, legs.y, size * 1/4, size * 3/8);
     rect(legs.x + size * 0.5,legs.y, size * 1/4, size * 3/8);
     }
-    else{if (passedTime > totTime){
+    if(start == true){
+    if (second() % 2 == 0){
       rect(arms.x, arms.y, size * 0.125, size * 0.5);
       rect(arms.x + size * 0.875, arms.y, size * 0.5, size * 0.125);
-      savedTime = millis();
+      rect(legs.x - size * 3/8 + size * 1/4, legs.y, size * 3/8, size * 1/4);
+      rect(legs.x + size * 0.5,legs.y, size * 1/4, size * 3/8);
+      //savedTime = millis();
     }
     else{
+      rect(arms.x, arms.y, size * 0.5, size * 0.125);
+      rect(arms.x + size * 0.875, arms.y, size * 0.125, size * 0.5);
+      rect(legs.x, legs.y, size * 1/4, size * 3/8);
+      rect(legs.x + size * 0.5 - size * 3/8 + size * 1/4,legs.y, size * 3/8, size * 1/4);
     }
     }
   }
@@ -111,6 +146,7 @@ void setup(){
     }
     frameCount ++;
     drawOb();
+    gravity();
   }
   
   void newOb(){
@@ -244,7 +280,7 @@ void setup(){
     }
     
     for(PVector posRun : runner){
-      if(posRun.x * size == duck.x * size && posRun.y * size == duck.y * size|| posRun.x == jump.x && posRun.y == jump.y){
+      if(posRun.x == duck.x && posRun.y == duck.y || posRun.x == jump.x && posRun.y == jump.y){
         reset();
     }
   }
@@ -255,14 +291,33 @@ void setup(){
        start = true;
       }
       if(keyCode == UP){
-        posRun.set(new PVector(posRun.x, posRun.y - size));
+        if(posRun.y > 0){
+        posRun.set(new PVector(posRun.x, posRun.y - 3/2 * size));
+        }
       }
       if(keyCode == DOWN){
-        posRun.set(new PVector(posRun.x, posRun.y + size));
+        if(posRun.y < h * size - 2 * size){
+        posRun.set(new PVector(posRun.x, posRun.y + 3/2 * size));
+      }
       }
     }
   }
   
   void reset(){
-    
+    background(200);
+    background(bgrd);
+    frameRate(60);
+  fill(77,73,73);
+  size(1300, 878);
+  savedTime = millis();
+  w = width / size;
+  h = height / size;
+  posRun = new PVector (w/4 * size, h/2 * size);
+  posPol = new PVector (w/8 * size, h/2 * size);
+  newLanes();
+  ob.add("duck");
+  ob.add("jump");
+  ob.add("up");
+  newOb();
+  start = false;
   } 
