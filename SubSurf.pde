@@ -4,7 +4,7 @@ PVector bgrnd;
 PVector duck;
 PVector jump;
 PVector up;
-PVector dir;
+PVector coin;
 PVector bodyPart;
 PVector arms;
 PVector legs;
@@ -70,6 +70,8 @@ void setup(){
       }
   }
   
+  void drawCoin(){
+  }
   
   void newGuy(){
     fill(229,214,162);
