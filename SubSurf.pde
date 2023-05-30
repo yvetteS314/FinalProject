@@ -9,6 +9,7 @@ PVector bodyPart;
 PVector arms;
 PVector legs;
 
+
 PImage bgrd;
 
 boolean start = false;
@@ -36,17 +37,18 @@ void setup(){
   savedTime = millis();
   w = width / size;
   h = height / size;
-  posRun = new PVector (w/4 * size, h/2 * size - size);
+  posRun = new PVector (w/4 * size, h/2 * size);
   posPol = new PVector (w/8 * size, h/2 * size);
   newLanes();
   ob.add("duck");
   ob.add("jump");
   ob.add("up");
   newOb();
+  newCoin();
   }
   
   void gravity(){
-    if(posRun.y < h/3 * size - 2 * size){
+    if(posRun.y < h/3 * size - size){
       int curY = (int) posRun.y;
       if(curY < h/3 * size){
         posRun.y ++; 
@@ -54,14 +56,14 @@ void setup(){
       }
       }
       
-    if(posRun.y < 2*h/3 * size - 2 * size && posRun.y > h/3 * size - 2 * size){
+    if(posRun.y < 2*h/3 * size - size && posRun.y > h/3 * size - size){
         int curY = (int) posRun.y;
         if(curY < 2 * h/3 * size){
         posRun.y ++;
         curY = (int) posRun.y;
         }
       }
-      if(posRun.y < h * size - 2 * size && posRun.y > 2*h/3 * size - 2 * size){
+      if(posRun.y < h * size - 2 * size && posRun.y > 2*h/3 * size){
         int curY = (int) posRun.y;
       if(curY < h * size){
         posRun.y ++;
@@ -70,7 +72,24 @@ void setup(){
       }
   }
   
+  void newCoin(){
+    int pos = (int) random(0, 2);
+    if(lane.get(pos) == "jump"){
+      coin = new PVector(jump.x - size, jump.y + 0.75 * size);
+    }
+    if(lane.get(pos) == "up"){
+      coin = new PVector(up.x + size, up.y - 0.25 * size);
+    }
+    if(lane.get(pos) == "duck"){
+      coin = new PVector(duck.x, duck.y + 2.75 * size);
+    }
+  }
+  
   void drawCoin(){
+    fill(224,210,77);
+    circle(coin.x, coin.y, size / 2);
+    circle(coin.x + size, coin.y, size / 2);
+    circle(coin.x + 2 * size, coin.y, size / 2);
   }
   
   void newGuy(){
@@ -121,14 +140,14 @@ void setup(){
   void newLanes(){
     fill(28,27,27);
     for(int track = 0; track < w * size; track += size){
-      line(track, h/3 * size, track, h/3 * size - h/6 * size);
+      line(track, h/3 * size, track, h/3 * size + h/6 * size);
     }
-    line(0, h/3 * size - h/6 * size, w * size + size, h/3 * size - h/6 * size);
+    line(0, h/3 * size + h/6 * size, w * size + size, h/3 * size + h/6 * size);
     line(0,h/3 * size, w * size + size, h/3 * size);
     for(int track = 0; track < w * size; track += size){
-      line(track, 2*h/3 * size, track, 2*h/3 * size - h/6 * size);
+      line(track, 2*h/3 * size, track, 2*h/3 * size + h/6 * size);
     }
-    line(0, 2*h/3 * size - h/6 * size, w * size + size, 2*h/3 * size - h/6 * size);
+    line(0, 2*h/3 * size + h/6 * size, w * size + size, 2*h/3 * size + h/6 * size);
     line(0, 2*h/3 * size, w * size + size, 2*h/3 * size);
     for(int track = 0; track < w * size; track += size){
       line(track, h * size, track, h * size - size);
@@ -149,6 +168,7 @@ void setup(){
     frameCount ++;
     drawOb();
     gravity();
+    drawCoin();
   }
   
   void newOb(){
@@ -166,18 +186,18 @@ void setup(){
     for(int inLane = 0; inLane < 3; inLane ++){
       if(inLane == 0){
       if(lane.get(inLane) == "duck"){
-        duck = new PVector(w * size - size / 2, inLane * h/3 * size);
+        duck = new PVector(w * size - size / 2, inLane * h/3 * size + size);
         ducks.add(duck);
         println("duck");
       }
       else{
         if(lane.get(inLane) == "jump"){
-        jump = new PVector(w * size - size / 2, (inLane + 1) * h / 3 * size - h / 9 * size);
+        jump = new PVector(w * size - size / 2, (inLane + 1) * h / 3 * size - h / 9 * size + size);
         jumps.add(jump);
         println("jump");
       }
       else{
-        up = new PVector(w * size + size /2 , (inLane + 1) * h / 3 * size - h / 9 * size);
+        up = new PVector(w * size + size /2 , (inLane + 1) * h / 3 * size - h / 9 * size + size);
         println("up");
       }
     }
@@ -185,18 +205,18 @@ void setup(){
     else{
       if(inLane == 1){
       if(lane.get(inLane) == "duck"){
-        duck = new PVector(w * size - size / 2, inLane * h/3 * size);
+        duck = new PVector(w * size - size / 2, inLane * h/3 * size + size);
         ducks.add(duck);
         println("duck");
       }
       else{
         if (lane.get(inLane) == "jump"){
-        jump = new PVector(w * size - size / 2, (inLane + 1) * h / 3 * size - h / 9 * size);
+        jump = new PVector(w * size - size / 2, (inLane + 1) * h / 3 * size - h / 9 * size + size);
         jumps.add(jump);
         println("jump");
     }
     else{
-      up = new PVector(w * size + size /2 , (inLane + 1) * h / 3 * size - h / 9 * size);
+      up = new PVector(w * size + size /2 , (inLane + 1) * h / 3 * size - h / 9 * size + size);
       ups.add(up);  
         println("up");
     }
@@ -204,7 +224,7 @@ void setup(){
     }
     else{
       if(lane.get(inLane) == "duck"){
-        duck = new PVector(w * size - size / 2, inLane * h/3 * size);
+        duck = new PVector(w * size - size / 2, inLane * h/3 * size + size);
         ducks.add(duck);
         println("duck");
       }
@@ -250,6 +270,7 @@ void setup(){
     duck.x -= 0.5 * size;
     jump.x -= 0.5 * size;
     up.x -= 0.5 * size;
+    coin.x -= 0.5 * size;
    ducks.add(duck);
         if(ducks.size() > 1){
         ducks.remove(0);
