@@ -21,6 +21,8 @@ int h;
 int frameCount = 0;
 int  savedTime;
 int totTime = 1000;
+int currentScore;
+int highScore;
 
 ArrayList<PVector> runner = new ArrayList<PVector>();
 ArrayList<PVector> ducks = new ArrayList<PVector>();
@@ -37,6 +39,7 @@ void setup(){
   savedTime = millis();
   w = width / size;
   h = height / size;
+  currentScore = 0;
   posRun = new PVector (w/4 * size, h/2 * size);
   posPol = new PVector (w/8 * size, h/2 * size);
   newLanes();
@@ -63,7 +66,7 @@ void setup(){
         curY = (int) posRun.y;
         }
       }
-      if(posRun.y < h * size - 2 * size && posRun.y > 2*h/3 * size){
+      if(posRun.y < h * size - 2 * size && posRun.y > 2*h/3 * size - size){
         int curY = (int) posRun.y;
       if(curY < h * size){
         posRun.y ++;
@@ -160,15 +163,19 @@ void setup(){
     background(200);
     background(bgrd);
     newGuy();
-      moveLimbs();
+    moveLimbs();
     newLanes();
     if(frameCount % speed == 0){
+    if (duck.x < - size){
+       newOb();
+    }
     updateOb();
     }
     frameCount ++;
     drawOb();
     gravity();
     drawCoin();
+    updateGuy();
   }
   
   void newOb(){
@@ -266,7 +273,7 @@ void setup(){
   }
   
   void updateOb(){
-    if(start == true){
+   if(start == true){
     duck.x -= 0.5 * size;
     jump.x -= 0.5 * size;
     up.x -= 0.5 * size;
@@ -285,13 +292,16 @@ void setup(){
       }
     }
     if(duck.x < - size){
+      int size = lane.size();
+      for(int i = 0; i < size; i ++){
+        lane.remove(0);
+      }
       ob.add("duck");
       ob.add("jump");
       ob.add("up");
       ducks.remove(0);
       jumps.remove(0);
       ups.remove(0);
-      newOb();
     }
   }
   
@@ -301,13 +311,25 @@ void setup(){
     if(runner.size() > 0 ){
       runner.remove(0);
     }
-    
-    for(PVector posRun : runner){
-      if(posRun.x == duck.x && posRun.y == duck.y || posRun.x == jump.x && posRun.y == jump.y){
-        reset();
-    }
+    int lanes = -1;
+      if(legs. y< h/3 * size + size){
+        lanes = 0;
+      }
+      if(legs.y > h/3 * size + size && legs.y < 2*h/3 * size + size){
+        lanes = 1;
+      }
+      if(legs.y > 2*h/3 * size + size){
+        lanes = 2;
+      }
+      if(lane.get(lanes) == "duck"){
+      }
+      if(lane.get(lanes) ==  "jump"){
+      }
+      if(lane.get(lanes) == "up"){
+      }
+     
   }
-  }
+
   void keyPressed(){
     if(key == CODED){
       if(keyCode == RIGHT){
