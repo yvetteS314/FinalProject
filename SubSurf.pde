@@ -6,28 +6,37 @@ PVector jump;
 PVector up;
 PVector coin;
 PVector bodyPart;
+PVector bodyPol;
 PVector arms;
 PVector legs;
+PVector aPol;
+PVector lPol;
 
 
 PImage bgrd;
 
 boolean start = false;
+boolean squat = false;
 
 int speed = 10;
 int size = 80;
 int w;
 int h;
+int pos;
+int lanes;
 int frameCount = 0;
 int  savedTime;
 int totTime = 1000;
 int currentScore;
 int highScore;
+int squatStart;
+int newPos;
 
 ArrayList<PVector> runner = new ArrayList<PVector>();
 ArrayList<PVector> ducks = new ArrayList<PVector>();
 ArrayList<PVector> jumps = new ArrayList<PVector>();
 ArrayList<PVector> ups = new ArrayList<PVector>();
+ArrayList<PVector> coins = new ArrayList<PVector>();
 ArrayList<String> lane = new ArrayList<String>(); // 1 2 3
 ArrayList<String> ob = new ArrayList<String>();
 
@@ -41,7 +50,7 @@ void setup(){
   h = height / size;
   currentScore = 0;
   posRun = new PVector (w/4 * size, h/2 * size);
-  posPol = new PVector (w/8 * size, h/2 * size);
+  posPol = new PVector (posRun.x - w/8 * size, posRun.y);
   newLanes();
   ob.add("duck");
   ob.add("jump");
@@ -55,6 +64,7 @@ void setup(){
       int curY = (int) posRun.y;
       if(curY < h/3 * size){
         posRun.y ++; 
+        posPol.y = posRun.y;
         curY = (int) posRun.y;
       }
       }
@@ -63,6 +73,7 @@ void setup(){
         int curY = (int) posRun.y;
         if(curY < 2 * h/3 * size){
         posRun.y ++;
+        posPol.y = posRun.y;
         curY = (int) posRun.y;
         }
       }
@@ -70,29 +81,50 @@ void setup(){
         int curY = (int) posRun.y;
       if(curY < h * size){
         posRun.y ++;
+        posPol.y = posRun.y;
         curY = (int) posRun.y;
       }
       }
   }
   
   void newCoin(){
-    int pos = (int) random(0, 2);
+    pos = (int) random(0, 2);
+    if(lane.size() > 0){
     if(lane.get(pos) == "jump"){
       coin = new PVector(jump.x - size, jump.y + 0.75 * size);
+      coins.add(coin);
     }
     if(lane.get(pos) == "up"){
       coin = new PVector(up.x + size, up.y - 0.25 * size);
-    }
+      coins.add(coin);
+      }
     if(lane.get(pos) == "duck"){
       coin = new PVector(duck.x, duck.y + 2.75 * size);
+      coins.add(coin);
+      }
     }
   }
   
   void drawCoin(){
     fill(224,210,77);
-    circle(coin.x, coin.y, size / 2);
-    circle(coin.x + size, coin.y, size / 2);
-    circle(coin.x + 2 * size, coin.y, size / 2);
+    if(coin.x > - size){
+      if(lane.size() > 0){
+     if(lane.get(pos) == "duck" || lane.get(pos) == "up"){
+       for(PVector coin : coins){
+      circle(coin.x, coin.y, size / 2);
+      circle(coin.x + size, coin.y, size / 2);
+      circle(coin.x + 2 * size, coin.y, size / 2);
+       }
+     }
+     else{
+       for(PVector coin: coins){
+       circle(coin.x, coin.y, size / 2);
+       circle(coin.x + 1.5 * size, coin.y - size, size / 2);
+       circle(coin.x + 2.5 * size, coin.y, size / 2);
+       }
+     }
+      }
+    }
   }
   
   void newGuy(){
@@ -105,24 +137,74 @@ void setup(){
     square(bodyPart.x, bodyPart.y, size * 3 / 4);
     circle(bodyPart.x, bodyPart.y, size * 1/4);
     circle(bodyPart.x + size * 0.75, bodyPart.y, size * 1/4);
+    if(squat == false){
     rect(bodyPart.x, bodyPart.y + size * 0.75, size * 1/4, size * 3/8);
     rect(bodyPart.x + size * 0.5, bodyPart.y + size * 0.75, size * 1/4, size * 3/8);
     rect(bodyPart.x - size * 0.125, bodyPart.y, size * 0.125, size * 0.5);
     rect(bodyPart.x + size * 0.75, bodyPart.y, size * 0.125, size * 0.5);
+    }
     runner.add(bodyPart);
+    
+    fill(229,214,162);
+    circle(posPol.x, posPol.y, size);
+    fill(10,10,10);
+    circle(posPol.x + 0.5 * size, posPol.y, 10);
+    bodyPol = new PVector(posPol.x - 0.35 * size, posPol.y + 0.5 * size);
+    fill(35, 67, 118);
+    square(bodyPol.x, bodyPol.y, size * 3 / 4);
+    circle(bodyPol.x, bodyPol.y, size * 1/4);
+    circle(bodyPol.x + size * 0.75, bodyPol.y, size * 1/4);
+    rect(posPol.x - 0.375 * size, posPol.y - size * 0.5, size * 0.75, size * 0.25);
+    if(squat == false){
+    rect(bodyPol.x, bodyPol.y + size * 0.75, size * 1/4, size * 3/8);
+    rect(bodyPol.x + size * 0.5, bodyPol.y + size * 0.75, size * 1/4, size * 3/8);
+    rect(bodyPol.x - size * 0.125, bodyPol.y, size * 0.125, size * 0.5);
+    rect(bodyPol.x + size * 0.75, bodyPol.y, size * 0.125, size * 0.5);
+    }
+  }
+  
+  void squatGuy(){
+    int dis = (int) posRun.x - (int) posPol.x;
+    if(second() - squatStart  < 2){
+    posRun.y = newPos;
+    arms = new PVector(bodyPart.x + size * 0.75, bodyPart.y);
+    legs = new PVector(bodyPart.x + size * 0.75, bodyPart.y + size * 0.5);
+    fill(72, 10, 95);
+    rect(arms.x, arms.y, size, size * 0.125);
+    rect(legs.x,legs.y, size, size * 0.125);
+    fill(35, 67, 118);
+    posPol.y = newPos;
+    rect(arms.x - dis, arms.y, size, size * 0.125);
+    rect(legs.x - dis,legs.y, size, size * 0.125);
+    }
+    else{
+      squat = false;
+      posRun.y -= size * 0.75;
+    }
   }
   
   void moveLimbs(){
+    fill(72, 10, 95);
     arms = new PVector(bodyPart.x - size * 0.125, bodyPart.y + size * 0.5);
     legs = new PVector(bodyPart.x, bodyPart.y + size * 9/8);
+    aPol = new PVector(bodyPol.x - size * 0.125, bodyPol.y + size * 0.5);
+    lPol = new PVector(bodyPol.x, bodyPol.y + size * 9/8);
     runner.add(arms);
     runner.add(legs);
+    int dis = (int) posRun.x - (int) posPol.x;
     if(start == false){
     rect(arms.x, arms.y, size * 0.125, size * 0.5);
     rect(arms.x + size * 0.875, arms.y, size * 0.125, size * 0.5);
     rect(legs.x, legs.y, size * 1/4, size * 3/8);
     rect(legs.x + size * 0.5,legs.y, size * 1/4, size * 3/8);
+    
+    fill(35, 67, 118);
+    rect(aPol.x, aPol.y, size * 0.125, size * 0.5);
+    rect(aPol.x + size * 0.875, aPol.y, size * 0.125, size * 0.5);
+    rect(lPol.x, lPol.y, size * 1/4, size * 3/8);
+    rect(lPol.x + size * 0.5,lPol.y, size * 1/4, size * 3/8);
     }
+    
     if(start == true){
     if (second() % 2 == 0){
       rect(arms.x, arms.y, size * 0.125, size * 0.5);
@@ -130,12 +212,24 @@ void setup(){
       rect(legs.x - size * 3/8 + size * 1/4, legs.y, size * 3/8, size * 1/4);
       rect(legs.x + size * 0.5,legs.y, size * 1/4, size * 3/8);
       //savedTime = millis();
+      fill(35, 67, 118);
+      rect(arms.x - dis, arms.y, size * 0.125, size * 0.5);
+      rect(arms.x + size * 0.875 - dis, arms.y, size * 0.5, size * 0.125);
+      rect(legs.x - size * 3/8 + size * 1/4 - dis, legs.y, size * 3/8, size * 1/4);
+      rect(legs.x + size * 0.5 - dis,legs.y, size * 1/4, size * 3/8);
     }
     else{
       rect(arms.x, arms.y, size * 0.5, size * 0.125);
       rect(arms.x + size * 0.875, arms.y, size * 0.125, size * 0.5);
       rect(legs.x, legs.y, size * 1/4, size * 3/8);
       rect(legs.x + size * 0.5 - size * 3/8 + size * 1/4,legs.y, size * 3/8, size * 1/4);
+      
+      fill(35, 67, 118);
+      rect(arms.x - dis, arms.y, size * 0.5, size * 0.125);
+      rect(arms.x + size * 0.875 - dis, arms.y, size * 0.125, size * 0.5);
+      rect(legs.x - dis, legs.y, size * 1/4, size * 3/8);
+      rect(legs.x + size * 0.5 - size * 3/8 + size * 1/4 - dis,legs.y, size * 3/8, size * 1/4);
+      
     }
     }
   }
@@ -163,19 +257,40 @@ void setup(){
     background(200);
     background(bgrd);
     newGuy();
+    if(squat == false){
     moveLimbs();
+    }
     newLanes();
     if(frameCount % speed == 0){
     if (duck.x < - size){
        newOb();
+       if(second() % 15 == 0){
+       speed -= 0.25;
+       }
     }
     updateOb();
     }
     frameCount ++;
     drawOb();
     gravity();
+    if(coin.x < - size){
+    newCoin();
+    }
     drawCoin();
     updateGuy();
+    if(start == false){
+    textSize(70);
+    fill(255,255,255);
+    text("High Score: " + highScore, posRun.x, posRun.y + size * 3);
+    }
+    else{
+    textSize(50);
+    fill(255,255,255);
+    text("Current Score: " + currentScore, 0, h * size + size * 3/4);
+    }
+    if(squat == true){
+      squatGuy();
+    }
   }
   
   void newOb(){
@@ -277,7 +392,9 @@ void setup(){
     duck.x -= 0.5 * size;
     jump.x -= 0.5 * size;
     up.x -= 0.5 * size;
+    for(PVector coin: coins){
     coin.x -= 0.5 * size;
+    }
    ducks.add(duck);
         if(ducks.size() > 1){
         ducks.remove(0);
@@ -311,8 +428,8 @@ void setup(){
     if(runner.size() > 0 ){
       runner.remove(0);
     }
-    int lanes = -1;
-      if(legs. y< h/3 * size + size){
+    if(lane.size() > 0){
+      if(legs.y < h/3 * size + size){
         lanes = 0;
       }
       if(legs.y > h/3 * size + size && legs.y < 2*h/3 * size + size){
@@ -322,12 +439,30 @@ void setup(){
         lanes = 2;
       }
       if(lane.get(lanes) == "duck"){
+        if(posRun.x - size/2 < duck.x && posRun.x + size/2 > duck.x && posRun.y - size * 1.5 < duck.y && posRun.y + size * 1.5 > duck.y ){
+          reset();
+        }
       }
       if(lane.get(lanes) ==  "jump"){
+        if(legs.x - size/4 < jump.x && legs.x + size/4 > jump.x && legs.y - size < jump.y && legs.y + size/2 > jump.y ){
+          reset();
+      }
       }
       if(lane.get(lanes) == "up"){
-      }
+        if(legs.x < up.x + size * 10 && legs.x > up.x && legs.y - size * 1.5 < up.y && legs.y + size * 1.5 > up.y ){
+          if(legs.y > up.y){
+          posRun.y = up.y - 2 * size;
+          }
+        }
+    }
+    if(legs.x - size/2 < coin.x && legs.x > coin.x && legs.y - size/2 < coin.y && legs.y + size/2 > coin.y){
+        currentScore ++;
+        if(currentScore > highScore){
+          highScore = currentScore;
+        } 
+    }
      
+  }
   }
 
   void keyPressed(){
@@ -338,17 +473,29 @@ void setup(){
       if(keyCode == UP){
         if(posRun.y > 0){
         posRun.set(new PVector(posRun.x, posRun.y - 3/2 * size));
+        posPol.set(new PVector(posPol.x, posPol.y - 3/2 * size));
         }
       }
       if(keyCode == DOWN){
-        if(posRun.y < h * size - 2 * size){
+        if(posRun.y < h * size - 3 * size){
         posRun.set(new PVector(posRun.x, posRun.y + 3/2 * size));
+        posPol.set(new PVector(posPol.x, posPol.y + 3/2 * size));
+      }
+      }
+      if(squat == false){
+      if(keyCode == LEFT){
+        squatStart = second();
+        newPos = (int) (posRun.y + size * 0.75);
+        squat = true;
       }
       }
     }
   }
   
   void reset(){
+    setup();
+    currentScore = 0;
+    println("reset");
     background(200);
     background(bgrd);
     frameRate(60);
