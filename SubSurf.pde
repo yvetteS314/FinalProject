@@ -1,3 +1,6 @@
+import processing.sound.*;
+SoundFile file;
+
 PVector posRun;
 PVector posPol;
 PVector bgrnd;
@@ -31,6 +34,7 @@ int currentScore;
 int highScore;
 int squatStart;
 int newPos;
+int increment = 0;
 
 ArrayList<PVector> runner = new ArrayList<PVector>();
 ArrayList<PVector> ducks = new ArrayList<PVector>();
@@ -50,13 +54,15 @@ void setup(){
   h = height / size;
   currentScore = 0;
   posRun = new PVector (w/4 * size, h/2 * size);
-  posPol = new PVector (posRun.x - w/8 * size, posRun.y);
+  posPol = new PVector (posRun.x - w/4 * size + increment, posRun.y);
   newLanes();
   ob.add("duck");
   ob.add("jump");
   ob.add("up");
   newOb();
   newCoin();
+  //file = new SoundFile(this, "SubSurf.mp3");
+  //file.loop();
   }
   
   void gravity(){
@@ -179,7 +185,7 @@ void setup(){
     }
     else{
       squat = false;
-      posRun.y -= size * 0.75;
+      posRun.y -= size;
     }
   }
   
@@ -264,7 +270,7 @@ void setup(){
     if(frameCount % speed == 0){
     if (duck.x < - size){
        newOb();
-       if(second() % 15 == 0){
+       if(second() % 10 == 0){
        speed -= 0.25;
        }
     }
@@ -440,11 +446,13 @@ void setup(){
       }
       if(lane.get(lanes) == "duck"){
         if(posRun.x - size/2 < duck.x && posRun.x + size/2 > duck.x && posRun.y - size * 1.5 < duck.y && posRun.y + size * 1.5 > duck.y ){
+          increment += size/2;
           reset();
         }
       }
       if(lane.get(lanes) ==  "jump"){
         if(legs.x - size/4 < jump.x && legs.x + size/4 > jump.x && legs.y - size < jump.y && legs.y + size/2 > jump.y ){
+          increment += size/2;
           reset();
       }
       }
@@ -461,7 +469,12 @@ void setup(){
           highScore = currentScore;
         } 
     }
-     
+    if (posRun.x == posPol.x + size){
+      reset();
+      textSize(50);
+      fill(255,255,255);
+      text("GAME OVER: YOU GOT CAUGHT", 0, h * size + size * 3/4);
+    }
   }
   }
 
@@ -471,6 +484,7 @@ void setup(){
        start = true;
       }
       if(keyCode == UP){
+       
         if(posRun.y > 0){
         posRun.set(new PVector(posRun.x, posRun.y - 3/2 * size));
         posPol.set(new PVector(posPol.x, posPol.y - 3/2 * size));
@@ -494,6 +508,7 @@ void setup(){
   
   void reset(){
     setup();
+    //posPol.x += increment;
     currentScore = 0;
     println("reset");
     background(200);
@@ -504,8 +519,8 @@ void setup(){
   savedTime = millis();
   w = width / size;
   h = height / size;
-  posRun = new PVector (w/4 * size, h/2 * size);
-  posPol = new PVector (w/8 * size, h/2 * size);
+  //posRun = new PVector (w/4 * size, h/2 * size);
+  //posPol = new PVector (w/8 * size, h/2 * size);
   newLanes();
   ob.add("duck");
   ob.add("jump");
