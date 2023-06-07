@@ -176,12 +176,16 @@ void setup(){
     arms = new PVector(bodyPart.x + size * 0.75, bodyPart.y);
     legs = new PVector(bodyPart.x + size * 0.75, bodyPart.y + size * 0.5);
     fill(72, 10, 95);
+    rect(bodyPart.x + size * 0.75, bodyPart.y + size * 0.25, size * 1/4, size * 3/8);
+    rect(bodyPart.x + size, bodyPart.y + size * 0.25, size * 1/4, size/2);
     rect(arms.x, arms.y, size, size * 0.125);
-    rect(legs.x,legs.y, size, size * 0.125);
+    //rect(legs.x,legs.y, size, size * 0.125);
     fill(35, 67, 118);
     posPol.y = newPos;
     rect(arms.x - dis, arms.y, size, size * 0.125);
-    rect(legs.x - dis,legs.y, size, size * 0.125);
+    //rect(legs.x - dis,legs.y, size, size * 0.125);
+    rect(bodyPart.x + size * 0.75 - dis, bodyPart.y + size * 0.25, size * 1/4, size * 3/8);
+    rect(bodyPart.x + size - dis, bodyPart.y + size * 0.25, size * 1/4, size/2);
     }
     else{
       squat = false;
@@ -499,7 +503,7 @@ void setup(){
       if(squat == false){
       if(keyCode == LEFT){
         squatStart = second();
-        newPos = (int) (posRun.y + size * 0.75);
+        newPos = (int) (posRun.y + size * 0.7);
         squat = true;
       }
       }
