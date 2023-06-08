@@ -20,7 +20,7 @@ PImage bgrd;
 
 boolean start = false;
 boolean squat = false;
-boolean boardTouch = false;
+boolean boardTouch;
 
 int speed = 10;
 int size = 80;
@@ -64,6 +64,7 @@ void setup(){
   ob.add("up");
   newOb();
   newCoin();
+  boardTouch = false;
   //file = new SoundFile(this, "SurfSong.mp3");
   }
   
@@ -137,10 +138,10 @@ void setup(){
   
   void boardGen(){
     int choice = -1;
-    if(second() % 20 == 0 && start == true){
+    if(second() % 20 == 0 && second() != 0 && start == true){
       choice = (int) random(0,3);
     if(choice == 0){
-    board = new PVector(w * size, jump.y);
+    board = new PVector(w * size, jump.y - size);
     }
     if(choice == 1){
     board = new PVector(w * size, up.y - size);
@@ -337,7 +338,7 @@ void setup(){
       squatGuy();
     }
     boardGen();
-    if(boardTouch == true && second() - boardTime < 16){
+    if(boardTouch == true && second() - boardTime < 10){
       boardDraw();
     }
     else{
@@ -524,7 +525,7 @@ void setup(){
       text("GAME OVER: YOU GOT CAUGHT", 0, h * size + size * 3/4);
     }
   }
-  if(posRun.x > board.x + 40 && posRun.y < board.y + 40 && posRun.y > board.y - 40 || legs.x > board.x + 40 && legs.y < board.y + 40 && legs.y > board.y - 40){
+  if(posRun.x > board.x - 40 && posRun.x < board.x + 40 && posRun.y < board.y + 40 && posRun.y > board.y - 40 || legs.x > board.x + 40 && legs.y < board.y + 40 && legs.y > board.y - 40){
     boardTime = second();
     boardTouch = true;
   }
@@ -546,8 +547,8 @@ void setup(){
         posPol.set(new PVector(posPol.x, posPol.y - 3/2 * size));
           }
           else{
-            posRun.y -=10;
-            posPol.y -=10;
+            posRun.y -=20;
+            posPol.y -=20;
         //posRun.set(new PVector(posRun.x, posRun.y - 2 * size));
         //posPol.set(new PVector(posPol.x, posPol.y - 2 * size));
         }
@@ -562,8 +563,8 @@ void setup(){
           }
           else{
             if(posRun.y < h * size - 2 * size){
-            posRun.y +=10;
-            posPol.y +=10;
+            posRun.y +=20;
+            posPol.y +=20;
             }
             //posRun.set(new PVector(posRun.x, posRun.y + 2 * size));
             //posPol.set(new PVector(posPol.x, posPol.y + 2 * size));
