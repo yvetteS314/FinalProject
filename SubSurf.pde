@@ -36,6 +36,7 @@ int highScore;
 int squatStart;
 int newPos;
 int increment = 0;
+int boardTime;
 
 ArrayList<PVector> runner = new ArrayList<PVector>();
 ArrayList<PVector> ducks = new ArrayList<PVector>();
@@ -235,7 +236,8 @@ void setup(){
     rect(arms.x + size * 0.875, arms.y, size * 0.125, size * 0.5);
     rect(legs.x, legs.y, size * 1/4, size * 3/8);
     rect(legs.x + size * 0.5,legs.y, size * 1/4, size * 3/8);
-    
+    }
+    if(start == false){
     fill(35, 67, 118);
     rect(aPol.x, aPol.y, size * 0.125, size * 0.5);
     rect(aPol.x + size * 0.875, aPol.y, size * 0.125, size * 0.5);
@@ -243,12 +245,14 @@ void setup(){
     rect(lPol.x + size * 0.5,lPol.y, size * 1/4, size * 3/8);
     }
     int dis = (int) posRun.x - (int) posPol.x;
-    if(start == true && boardTouch == false){
+    if(start == true){
     if (second() % 2 == 0){
+      if(boardTouch == false){
       rect(arms.x, arms.y, size * 0.125, size * 0.5);
       rect(arms.x + size * 0.875, arms.y, size * 0.5, size * 0.125);
       rect(legs.x - size * 3/8 + size * 1/4, legs.y, size * 3/8, size * 1/4);
       rect(legs.x + size * 0.5,legs.y, size * 1/4, size * 3/8);
+      }
       //savedTime = millis();
       fill(35, 67, 118);
       rect(arms.x - dis, arms.y, size * 0.125, size * 0.5);
@@ -257,11 +261,12 @@ void setup(){
       rect(legs.x + size * 0.5 - dis,legs.y, size * 1/4, size * 3/8);
     }
     else{
+      if(boardTouch == false){
       rect(arms.x, arms.y, size * 0.5, size * 0.125);
       rect(arms.x + size * 0.875, arms.y, size * 0.125, size * 0.5);
       rect(legs.x, legs.y, size * 1/4, size * 3/8);
       rect(legs.x + size * 0.5 - size * 3/8 + size * 1/4,legs.y, size * 3/8, size * 1/4);
-      
+      }
       fill(35, 67, 118);
       rect(arms.x - dis, arms.y, size * 0.5, size * 0.125);
       rect(arms.x + size * 0.875 - dis, arms.y, size * 0.125, size * 0.5);
@@ -332,8 +337,11 @@ void setup(){
       squatGuy();
     }
     boardGen();
-    if(boardTouch == true){
+    if(boardTouch == true && second() - boardTime < 16){
       boardDraw();
+    }
+    else{
+      boardTouch = false;
     }
   }
   
@@ -470,6 +478,7 @@ void setup(){
   void updateGuy(){
     runner.add(posRun);
     runner.add(bodyPart);
+    posPol.y = posRun.y;
     if(runner.size() > 0 ){
       runner.remove(0);
     }
@@ -515,7 +524,8 @@ void setup(){
       text("GAME OVER: YOU GOT CAUGHT", 0, h * size + size * 3/4);
     }
   }
-  if(posRun.x > board.x + 40 && posRun.y < board.y + 40 && posRun.y > board.y - 40){
+  if(posRun.x > board.x + 40 && posRun.y < board.y + 40 && posRun.y > board.y - 40 || legs.x > board.x + 40 && legs.y < board.y + 40 && legs.y > board.y - 40){
+    boardTime = second();
     boardTouch = true;
   }
   }
