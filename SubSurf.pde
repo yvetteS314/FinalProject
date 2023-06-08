@@ -14,7 +14,7 @@ PVector arms;
 PVector legs;
 PVector aPol;
 PVector lPol;
-
+PVector board;
 
 PImage bgrd;
 
@@ -55,14 +55,14 @@ void setup(){
   currentScore = 0;
   posRun = new PVector (w/4 * size, h/2 * size);
   posPol = new PVector (posRun.x - w/4 * size + increment, posRun.y);
+  board = new PVector(w * size, 2/3 * h * size);
   newLanes();
   ob.add("duck");
   ob.add("jump");
   ob.add("up");
   newOb();
   newCoin();
-  //file = new SoundFile(this, "SubSurf.mp3");
-  //file.loop();
+  //file = new SoundFile(this, "SurfSong.mp3");
   }
   
   void gravity(){
@@ -133,6 +133,29 @@ void setup(){
     }
   }
   
+  void boardGen(){
+    int choice = -1;
+    if(second() % 20 == 0 && start == true){
+      choice = (int) random(0,3);
+    if(choice == 0){
+    board = new PVector(w * size, jump.y);
+    }
+    if(choice == 1){
+    board = new PVector(w * size, up.y - size);
+    }
+    else{
+     board = new PVector(w * size, duck.y + 2 * size);
+    }
+    }
+    fill(211,87,45);
+    square(board.x, board.y, size);
+    fill(255,255,255);
+    textSize(50);
+    text("?", board.x + size/3, board.y + size * 2/3);
+  }
+  
+  void boardDraw(){
+  }
   void newGuy(){
     fill(229,214,162);
     circle(posRun.x, posRun.y, size);
@@ -301,6 +324,7 @@ void setup(){
     if(squat == true){
       squatGuy();
     }
+    boardGen();
   }
   
   void newOb(){
@@ -402,6 +426,7 @@ void setup(){
     duck.x -= 0.5 * size;
     jump.x -= 0.5 * size;
     up.x -= 0.5 * size;
+    board.x -= 0.5 * size;
     for(PVector coin: coins){
     coin.x -= 0.5 * size;
     }
@@ -485,6 +510,9 @@ void setup(){
   void keyPressed(){
     if(key == CODED){
       if(keyCode == RIGHT){
+        if(start == false){
+          //file.play();
+        }
        start = true;
       }
       if(keyCode == UP){
@@ -511,6 +539,7 @@ void setup(){
   }
   
   void reset(){
+    file.stop();
     setup();
     //posPol.x += increment;
     currentScore = 0;
