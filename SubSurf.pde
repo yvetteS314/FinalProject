@@ -20,6 +20,7 @@ PImage bgrd;
 
 boolean start = false;
 boolean squat = false;
+boolean boardTouch = false;
 
 int speed = 10;
 int size = 80;
@@ -155,7 +156,12 @@ void setup(){
   }
   
   void boardDraw(){
+    fill(random(0, 256), random(0, 256), random(0,256));
+    arc(legs.x, legs.y + size/4, size*0.5, size*0.5, 0, PI);
+    rect(legs.x, legs.y + size/4, size * 3/4, size/4);
+    arc(legs.x + size * 0.75, legs.y + size/4, size*0.5, size*0.5, 0, HALF_PI);
   }
+  
   void newGuy(){
     fill(229,214,162);
     circle(posRun.x, posRun.y, size);
@@ -173,7 +179,7 @@ void setup(){
     rect(bodyPart.x + size * 0.75, bodyPart.y, size * 0.125, size * 0.5);
     }
     runner.add(bodyPart);
-    
+
     fill(229,214,162);
     circle(posPol.x, posPol.y, size);
     fill(10,10,10);
@@ -224,8 +230,7 @@ void setup(){
     lPol = new PVector(bodyPol.x, bodyPol.y + size * 9/8);
     runner.add(arms);
     runner.add(legs);
-    int dis = (int) posRun.x - (int) posPol.x;
-    if(start == false){
+    if(start == false || boardTouch == true){
     rect(arms.x, arms.y, size * 0.125, size * 0.5);
     rect(arms.x + size * 0.875, arms.y, size * 0.125, size * 0.5);
     rect(legs.x, legs.y, size * 1/4, size * 3/8);
@@ -237,8 +242,8 @@ void setup(){
     rect(lPol.x, lPol.y, size * 1/4, size * 3/8);
     rect(lPol.x + size * 0.5,lPol.y, size * 1/4, size * 3/8);
     }
-    
-    if(start == true){
+    int dis = (int) posRun.x - (int) posPol.x;
+    if(start == true && boardTouch == false){
     if (second() % 2 == 0){
       rect(arms.x, arms.y, size * 0.125, size * 0.5);
       rect(arms.x + size * 0.875, arms.y, size * 0.5, size * 0.125);
@@ -305,7 +310,9 @@ void setup(){
     }
     frameCount ++;
     drawOb();
+    if(boardTouch == false){
     gravity();
+    }
     if(coin.x < - size){
     newCoin();
     }
@@ -325,6 +332,9 @@ void setup(){
       squatGuy();
     }
     boardGen();
+    if(boardTouch == true){
+      boardDraw();
+    }
   }
   
   void newOb(){
@@ -505,6 +515,9 @@ void setup(){
       text("GAME OVER: YOU GOT CAUGHT", 0, h * size + size * 3/4);
     }
   }
+  if(posRun.x > board.x + 40 && posRun.y < board.y + 40 && posRun.y > board.y - 40){
+    boardTouch = true;
+  }
   }
 
   void keyPressed(){
@@ -518,15 +531,33 @@ void setup(){
       if(keyCode == UP){
        
         if(posRun.y > 0){
+          if(boardTouch == false){
         posRun.set(new PVector(posRun.x, posRun.y - 3/2 * size));
         posPol.set(new PVector(posPol.x, posPol.y - 3/2 * size));
+          }
+          else{
+            posRun.y -=10;
+            posPol.y -=10;
+        //posRun.set(new PVector(posRun.x, posRun.y - 2 * size));
+        //posPol.set(new PVector(posPol.x, posPol.y - 2 * size));
         }
       }
+      }
       if(keyCode == DOWN){
-        if(posRun.y < h * size - 3 * size){
+          if(boardTouch == false){
+            if(posRun.y < h * size - 3 * size){
         posRun.set(new PVector(posRun.x, posRun.y + 3/2 * size));
         posPol.set(new PVector(posPol.x, posPol.y + 3/2 * size));
-      }
+            }
+          }
+          else{
+            if(posRun.y < h * size - 2 * size){
+            posRun.y +=10;
+            posPol.y +=10;
+            }
+            //posRun.set(new PVector(posRun.x, posRun.y + 2 * size));
+            //posPol.set(new PVector(posPol.x, posPol.y + 2 * size));
+          }
       }
       if(squat == false){
       if(keyCode == LEFT){
@@ -539,7 +570,7 @@ void setup(){
   }
   
   void reset(){
-    file.stop();
+    //file.stop();
     setup();
     //posPol.x += increment;
     currentScore = 0;
