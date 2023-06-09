@@ -65,14 +65,16 @@ void setup(){
   newOb();
   newCoin();
   boardTouch = false;
-  //file = new SoundFile(this, "SurfSong.mp3");
+  file = new SoundFile(this, "SurfSong.mp3");
   }
   
   void gravity(){
     if(posRun.y < h/3 * size - size){
       int curY = (int) posRun.y;
       if(curY < h/3 * size){
+        if(boardTouch == false){
         posRun.y ++; 
+        }
         posPol.y = posRun.y;
         curY = (int) posRun.y;
       }
@@ -81,7 +83,9 @@ void setup(){
     if(posRun.y < 2*h/3 * size - size && posRun.y > h/3 * size - size){
         int curY = (int) posRun.y;
         if(curY < 2 * h/3 * size){
+        if(boardTouch == false){
         posRun.y ++;
+        }
         posPol.y = posRun.y;
         curY = (int) posRun.y;
         }
@@ -89,7 +93,9 @@ void setup(){
       if(posRun.y < h * size - 2 * size && posRun.y > 2*h/3 * size - size){
         int curY = (int) posRun.y;
       if(curY < h * size){
+        if(boardTouch == false){
         posRun.y ++;
+        }
         posPol.y = posRun.y;
         curY = (int) posRun.y;
       }
@@ -102,39 +108,56 @@ void setup(){
     if(lane.get(pos) == "jump"){
       coin = new PVector(jump.x - size, jump.y + 0.75 * size);
       coins.add(coin);
+      coin = new PVector(jump.x - size + 1.5 * size, jump.y + 0.75 * size - size);
+      coins.add(coin);
+      coin = new PVector(jump.x - size + 2.5 * size, jump.y + 0.75 * size);
+      coins.add(coin);
     }
     if(lane.get(pos) == "up"){
       coin = new PVector(up.x + size, up.y - 0.25 * size);
       coins.add(coin);
+      coin = new PVector(up.x + size * 2, up.y - 0.25 * size);
+      coins.add(coin);
+      coin = new PVector(up.x + size * 3, up.y - 0.25 * size);
+      coins.add(coin);
       }
     if(lane.get(pos) == "duck"){
       coin = new PVector(duck.x, duck.y + 2.75 * size);
+      coins.add(coin);
+      coin = new PVector(duck.x + size, duck.y + 2.75 * size);
+      coins.add(coin);
+      coin = new PVector(duck.x + size * 2, duck.y + 2.75 * size);
       coins.add(coin);
       }
     }
   }
   
   void drawCoin(){
+    if(coins.size() > 3){
+      while(coins.size() > 3){
+        coins.remove(0);
+      }
+    }
     fill(224,210,77);
     if(coin.x > - size){
       if(lane.size() > 0){
-     if(lane.get(pos) == "duck" || lane.get(pos) == "up"){
-       for(PVector coin : coins){
-      circle(coin.x, coin.y, size / 2);
-      circle(coin.x + size, coin.y, size / 2);
-      circle(coin.x + 2 * size, coin.y, size / 2);
-       }
-     }
-     else{
-       for(PVector coin: coins){
-       circle(coin.x, coin.y, size / 2);
-       circle(coin.x + 1.5 * size, coin.y - size, size / 2);
-       circle(coin.x + 2.5 * size, coin.y, size / 2);
-       }
-     }
+         //if(lane.get(pos) == "duck" || lane.get(pos) == "up"){
+           for(PVector coin : coins){
+              circle(coin.x, coin.y, size / 2);
+              //circle(coin.x + size, coin.y, size / 2);
+              //circle(coin.x + 2 * size, coin.y, size / 2);
+          // }
+        // }
+        // else{
+         //  for(PVector coin: coins){
+         //      circle(coin.x, coin.y, size / 2);
+         //      circle(coin.x + 1.5 * size, coin.y - size, size / 2);
+         //      circle(coin.x + 2.5 * size, coin.y, size / 2);
+           }
+          }
       }
     }
-  }
+ // }
   
   void boardGen(){
     int choice = -1;
@@ -308,7 +331,8 @@ void setup(){
     if(frameCount % speed == 0){
     if (duck.x < - size){
        newOb();
-       if(second() % 10 == 0){
+       newCoin();
+       if(second() % 15 == 0 && start == true){
        speed -= 0.25;
        }
     }
@@ -316,11 +340,11 @@ void setup(){
     }
     frameCount ++;
     drawOb();
-    if(boardTouch == false){
     gravity();
-    }
-    if(coin.x < - size){
+    if(coins.size() > 0){
+    if(coins.get(0).x < - size){
     newCoin();
+    }
     }
     drawCoin();
     updateGuy();
@@ -479,7 +503,9 @@ void setup(){
   void updateGuy(){
     runner.add(posRun);
     runner.add(bodyPart);
+    if(boardTouch == false){
     posPol.y = posRun.y;
+    }
     if(runner.size() > 0 ){
       runner.remove(0);
     }
@@ -500,7 +526,7 @@ void setup(){
         }
       }
       if(lane.get(lanes) ==  "jump"){
-        if(legs.x - size/4 < jump.x && legs.x + size/4 > jump.x && legs.y - size < jump.y && legs.y + size/2 > jump.y ){
+        if(legs.x - size/4 < jump.x && legs.x + size/4 > jump.x && legs.y - size < jump.y && legs.y > jump.y ){
           increment += size/2;
           reset();
       }
@@ -529,13 +555,18 @@ void setup(){
     boardTime = second();
     boardTouch = true;
   }
+  if(legs.x > coin.x - 10 && legs.x < coin.x + 10 && legs.y < coin.y + 10 && legs.y > coin.y - 10){
+    if(coins.size() > 0){
+    coins.remove(0);
+    }
+  }
   }
 
   void keyPressed(){
     if(key == CODED){
       if(keyCode == RIGHT){
         if(start == false){
-          //file.play();
+          file.play();
         }
        start = true;
       }
@@ -581,7 +612,7 @@ void setup(){
   }
   
   void reset(){
-    //file.stop();
+    file.stop();
     setup();
     //posPol.x += increment;
     currentScore = 0;
